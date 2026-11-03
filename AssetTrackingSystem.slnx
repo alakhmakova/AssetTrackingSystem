@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="AssetTrackingSystem.Tests/AssetTrackingSystem.Tests.csproj" />
+  <Project Path="AssetTrackingSystem/AssetTrackingSystem.csproj" />
+</Solution>
