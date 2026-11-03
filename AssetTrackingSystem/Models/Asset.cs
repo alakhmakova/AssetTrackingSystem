@@ -4,7 +4,7 @@ namespace AssetTrackingSystem.Models;
 
 public abstract class Asset
 {
-
+    // "internal" can be read from anywhere, but set only inside this project (AssetService assigns id)
     public int Id { get; internal set; }
     //each child will return the own name 
     public abstract string Type { get; }
