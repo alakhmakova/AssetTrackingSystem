@@ -7,5 +7,5 @@ public class MobilePhone : Asset
     {
     }
 
-    public override string Type => "MobilePhone";
+    public override string Type => "Mobile phone";
 }

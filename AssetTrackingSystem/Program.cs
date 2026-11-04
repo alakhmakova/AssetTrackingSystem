@@ -1,1 +1,5 @@
-﻿Console.WriteLine("Hello, World!");
+﻿using AssetTrackingSystem.UI;
+
+// Entry point: create the UI and start the app
+ConsoleUI console = new ConsoleUI();
+console.Run();
