@@ -99,7 +99,7 @@ public class ConsoleUI
                         : new MobilePhone(brand, model, purchaseDate, priceUsd, office);
 
                     _service.AddAsset(asset);
-                    InputHelper.ShowSuccess($"The asset {asset.Brand} {asset.Model} was successfully added to the {asset.Office.Name} office!\n ");
+                    InputHelper.ShowSuccess($"The asset {asset.Brand} {asset.Model} was successfully added to the {asset.Office.Name} office1!\n ");
                 }
                 // Should not happen because input is checked above, but the Asset constructor has the final word
                 catch (ValidationException e)

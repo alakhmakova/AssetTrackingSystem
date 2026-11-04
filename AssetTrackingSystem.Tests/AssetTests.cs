@@ -48,7 +48,7 @@ public class AssetTests
         Assert.Equal(date, mobilePhone.PurchaseDate);
         Assert.Equal(1420m, mobilePhone.PriceUsd);
         Assert.Equal(office, mobilePhone.Office);
-        Assert.Equal("MobilePhone", mobilePhone.Type);
+        Assert.Equal("Mobile phone", mobilePhone.Type);
     }
 
     // ===== Test case 2: invalid data -> exception. =====
