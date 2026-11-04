@@ -29,6 +29,12 @@ public class AssetService
     {
         return _assets.OrderBy(a => a.Type).ThenBy(a => a.PurchaseDate).ToList();
     }
+
+    //Sorted by id
+    public List<Asset> GetAssetsSortedById()
+    {
+        return _assets.OrderBy(a => a.Id).ToList();
+    }
     // Brand or model contains the text (ignore case); throw AssetNotFoundException if nothing is found
     public List<Asset> SearchAssets(string text) => throw new NotImplementedException();
 
@@ -37,4 +43,20 @@ public class AssetService
 
     // Throw AssetNotFoundException if there is no asset with this id
     public void RemoveAssetById(int id) => throw new NotImplementedException();
+
+    // Assets and next id, ready to be saved
+    public AssetData GetData()
+    {
+        return new AssetData { NextId = _nextId, Assets = GetAssetsSortedById() };
+    }
+
+    // Replace the list and the next id with data loaded from the file
+    public void LoadData(AssetData data)
+    {
+        _assets.Clear(); // readonly forbids replacing the list, but its contents can still change
+        _assets.AddRange(data.Assets);
+        // Never below the biggest existing id + 1, even if the file was edited by hand
+        int maxId = _assets.Count > 0 ? _assets.Max(p => p.Id) : 0;
+        _nextId = Math.Max(data.NextId, maxId + 1);
+    }
 }

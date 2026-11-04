@@ -10,6 +10,8 @@ public class ConsoleUI
 {
     // Logic lives in AssetService; readonly, so it is never replaced
     private readonly AssetService _service = new();
+    private readonly AssetFileStorage _storage = new("assets.json");
+
 
     // Offices the user can choose from.
     // TODO: move to a separate Offices class in the step with the office list
@@ -25,6 +27,8 @@ public class ConsoleUI
     public void Run()
     {
         ShowHeader("COMPANY ASSET TRACKING SYSTEM");
+        // Load saved assets on start
+        LoadAssetsFromFile();
         try
         {
             // Menu-based system: repeat until the user enters 0
@@ -45,6 +49,7 @@ public class ConsoleUI
                 {
                     case "1":
                         AddAssets();
+                        SaveAssetsToFile();
                         break;
                     case "2":
                         ListAssets(_service.GetAssetsSortedByOfficeAndDate());
@@ -99,7 +104,7 @@ public class ConsoleUI
                         : new MobilePhone(brand, model, purchaseDate, priceUsd, office);
 
                     _service.AddAsset(asset);
-                    InputHelper.ShowSuccess($"The asset {asset.Brand} {asset.Model} was successfully added to the {asset.Office.Name} office1!\n ");
+                    InputHelper.ShowSuccess($"The asset \"{asset.Brand} {asset.Model}\" was successfully added to the {asset.Office.Name} office!\n ");
                 }
                 // Should not happen because input is checked above, but the Asset constructor has the final word
                 catch (ValidationException e)
@@ -278,5 +283,33 @@ public class ConsoleUI
             padded[i] = isLastColumn ? cells[i].PadLeft(widths[i]) : cells[i].PadRight(widths[i]);
         }
         return string.Join(" ", padded);
+    }
+    // Load assets from the file; on error start with an empty list
+    private void LoadAssetsFromFile()
+    {
+        try
+        {
+            AssetData data = _storage.Load();
+            _service.LoadData(data);
+            if (data.Assets.Count > 0)
+            {
+                InputHelper.ShowSuccess($"{data.Assets.Count} assets loaded from file");
+            }
+            else
+            {
+                InputHelper.ShowSuccess("No saved assets found. Starting with an empty list.");
+            }
+        }
+        catch (DataFileException e) { InputHelper.ShowWarning(e.Message + " Starting with an empty list."); }
+    }
+
+    // Save all assets; show an error if the file can't be written
+    private void SaveAssetsToFile()
+    {
+        try
+        {
+            _storage.Save(_service.GetData());
+        }
+        catch (DataFileException e) { InputHelper.ShowError(e.Message); }
     }
 }

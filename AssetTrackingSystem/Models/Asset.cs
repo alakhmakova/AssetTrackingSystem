@@ -1,10 +1,16 @@
 
 using AssetTrackingSystem.Exceptions;
+using System.Text.Json.Serialization;
 namespace AssetTrackingSystem.Models;
 
+//
+[JsonPolymorphic(TypeDiscriminatorPropertyName = "$type")]
+[JsonDerivedType(typeof(Computer), "Computer")]
+[JsonDerivedType(typeof(MobilePhone), "MobilePhone")]
 public abstract class Asset
 {
     // "internal" can be read from anywhere, but set only inside this project (AssetService assigns id)
+    [JsonInclude]
     public int Id { get; internal set; }
     //each child will return the own name 
     public abstract string Type { get; }
