@@ -1,5 +1,3 @@
-using System;
-
 namespace AssetTrackingSystem.Exceptions;
 
 public class CurrencyRateNotFoundException : Exception
