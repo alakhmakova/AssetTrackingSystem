@@ -1,4 +1,3 @@
-using System.Reflection.Metadata;
 using AssetTrackingSystem.Exceptions;
 using AssetTrackingSystem.Models;
 using AssetTrackingSystem.Services;
@@ -8,10 +7,22 @@ namespace AssetTrackingSystem.UI;
 // Console UI: menu, input, tables, colors; the only class that prints and catches errors
 public class ConsoleUI
 {
+    private readonly CurrencyConverter? _converter;
     // Logic lives in AssetService; readonly, so it is never replaced
     private readonly AssetService _service = new();
     private readonly AssetFileStorage _storage = new("assets.json");
 
+    public ConsoleUI()
+    {
+        try
+        {
+            _converter = new CurrencyConverter(CurrencyConverter.FetchRates());
+        }
+        catch (Exception e)
+        {
+            InputHelper.ShowWarning("Could not load exchange rates. Local prices are not available.");
+        }
+    }
 
     // Offices the user can choose from.
     // TODO: move to a separate Offices class in the step with the office list
@@ -225,10 +236,10 @@ public class ConsoleUI
     }
 
     // Print assets as a table; column width = longest value or header + padding
-    // TODO: later add a "Local Price" column (currency step) and color rows by end-of-life status (lifecycle step)
+    // TODO: color rows by end-of-life status
     private void DisplayAssetsTable(List<Asset> assets)
     {
-        string[] headers = { "Id", "Type", "Brand", "Model", "Office", "Purchase Date", "Price (USD)" };
+        string[] headers = { "Id", "Type", "Brand", "Model", "Office", "Purchase Date", "Price (USD)", "Local Price" };
         List<string[]> rows = assets.Select(ToRow).ToList();
         int[] widths = GetColumnWidths(headers, rows);
         int tableWidth = widths.Sum() + widths.Length - 1; // + one space between columns
@@ -244,7 +255,7 @@ public class ConsoleUI
     }
 
     // One asset -> table cells as text
-    private static string[] ToRow(Asset asset)
+    private string[] ToRow(Asset asset)
     {
         return new[]
         {
@@ -255,7 +266,18 @@ public class ConsoleUI
             asset.Office.Name,
             asset.PurchaseDate.ToString("yyyy-MM-dd"),
             asset.PriceUsd.ToString("0.00"),
+            FormatLocalPrice(asset),
         };
+    }
+
+    private string FormatLocalPrice(Asset asset)
+    {
+        if (_converter == null)
+        {
+            return "N/A";
+        }
+        decimal localPrice = _converter.Convert(asset.PriceUsd, Currency.USD, asset.Office.Currency);
+        return $"{localPrice:0.00} {asset.Office.Currency}";
     }
 
     // Widest value in each column (header included) + padding
@@ -274,14 +296,17 @@ public class ConsoleUI
         return widths;
     }
 
-    // Pad each cell to its column width; the last column (price) is aligned to the right
+    // Indexes of the columns aligned to the right: "Price (USD)" (6) and "Local Price" (7)
+    private static readonly int[] RightAlignedColumns = { 6, 7 };
+
+    // Pad each cell to its column width; price columns are aligned to the right, the rest to the left
     private static string FormatRow(string[] cells, int[] widths)
     {
         string[] padded = new string[cells.Length];
         for (int i = 0; i < cells.Length; i++)
         {
-            bool isLastColumn = i == cells.Length - 1;
-            padded[i] = isLastColumn ? cells[i].PadLeft(widths[i]) : cells[i].PadRight(widths[i]);
+            bool alignRight = RightAlignedColumns.Contains(i);
+            padded[i] = alignRight ? cells[i].PadLeft(widths[i]) : cells[i].PadRight(widths[i]);
         }
         return string.Join(" ", padded);
     }
