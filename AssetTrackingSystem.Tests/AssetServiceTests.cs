@@ -161,16 +161,7 @@ public class AssetServiceTests
         Assert.Equal(1, data.Assets[0].Id);
         Assert.Equal(2, data.Assets[1].Id);
     }
-    /*
-        public void LoadData(AssetData data)
-    {
-        _assets.Clear(); // readonly forbids replacing the list, but its contents can still change
-        _assets.AddRange(data.Assets);
-        // Never below the biggest existing id + 1, even if the file was edited by hand
-        int maxId = _assets.Count > 0 ? _assets.Max(p => p.Id) : 0;
-        _nextId = Math.Max(data.NextId, maxId + 1);
-    }
-    */
+
     [Fact]
     public void LoadData_TwoAssets_RestoresAssetsAndNextId()
     {
@@ -195,14 +186,6 @@ public class AssetServiceTests
         service.AddAsset(newAsset);
         Assert.Equal(3, newAsset.Id);
     }
-    /*
-    Твой тест, по образцу: защита от ручной правки файла. 
-    Подготовь данные так же (2 ассета, Id 1 и 2), 
-    а потом «испорти» счётчик, как будто файл правили руками: data.NextId = 1; 
-    (у AssetData сеттер публичный, это можно). 
-    После LoadData новый ассет должен получить Id 3, а не 1, иначе будет дубль. 
-    Это проверяет строку с Math.Max в твоём LoadData.
-    */
 
     [Fact]
     public void LoadData_NextIdTooSmall_NewAssetGetsNextFreeId()

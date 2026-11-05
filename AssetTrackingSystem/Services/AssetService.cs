@@ -1,4 +1,5 @@
 using AssetTrackingSystem.Models;
+using AssetTrackingSystem.Exceptions;
 namespace AssetTrackingSystem.Services;
 
 public class AssetService
@@ -39,10 +40,22 @@ public class AssetService
     public List<Asset> SearchAssets(string text) => throw new NotImplementedException();
 
     // Throw AssetNotFoundException if there is no asset with this id
-    public Asset GetAssetById(int id) => throw new NotImplementedException();
+    public Asset GetAssetById(int id)
+    {
+        Asset? asset = _assets.FirstOrDefault(a => a.Id == id); // null if not found
+        if (asset == null)
+        {
+            throw new AssetNotFoundException($"Asset with id {id} not found.");
+        }
+        return asset;
+    }
 
-    // Throw AssetNotFoundException if there is no asset with this id
-    public void RemoveAssetById(int id) => throw new NotImplementedException();
+    // Remove the product with this id; 
+    //Throw AssetNotFoundException if there is no asset with this id
+    public void RemoveAssetById(int id)
+    {
+        _assets.Remove(GetAssetById(id));
+    }
 
     // Packs what is in memory (the asset list and _nextId) into an AssetData object and returns it.
     // Assets and next id, ready to be saved in the file.

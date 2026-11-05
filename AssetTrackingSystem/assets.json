@@ -1,5 +1,5 @@
 {
-  "NextId": 12,
+  "NextId": 14,
   "Assets": [
     {
       "$type": "Computer",
@@ -82,19 +82,6 @@
     {
       "$type": "MobilePhone",
       "Type": "Mobile phone",
-      "Id": 7,
-      "Brand": "Samsung",
-      "Model": "Galaxy S23",
-      "PurchaseDate": "2024-11-01T00:00:00",
-      "PriceUsd": 950,
-      "Office": {
-        "Name": "Sweden",
-        "Currency": "SEK"
-      }
-    },
-    {
-      "$type": "MobilePhone",
-      "Type": "Mobile phone",
       "Id": 8,
       "Brand": "Nokia",
       "Model": "XR20",
@@ -142,6 +129,19 @@
       "Office": {
         "Name": "USA",
         "Currency": "USD"
+      }
+    },
+    {
+      "$type": "MobilePhone",
+      "Type": "Mobile phone",
+      "Id": 12,
+      "Brand": "Samsung",
+      "Model": "Galaxy S23",
+      "PurchaseDate": "2024-11-01T00:00:00",
+      "PriceUsd": 950,
+      "Office": {
+        "Name": "Sweden",
+        "Currency": "SEK"
       }
     }
   ]

@@ -62,6 +62,7 @@ public class ConsoleUI
                         break;
                     case "5":
                         RemoveAssets();
+                        SaveAssetsToFile();
                         break;
                     case "0":
                         InputHelper.ShowInfo("Thank you for using this application");
@@ -195,7 +196,7 @@ public class ConsoleUI
                     if (InputHelper.ReadYesNo("Remove this asset? (y/n): ", "Answer can't be empty", "Please enter y or n"))
                     {
                         _service.RemoveAssetById(id);
-                        InputHelper.ShowSuccess("The asset was successfully removed!\n ");
+                        InputHelper.ShowSuccess($"The asset \"{asset.Brand} {asset.Model}\" was successfully removed!\n ");
                     }
                     else
                     {
