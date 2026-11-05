@@ -1,4 +1,5 @@
 using AssetTrackingSystem.Models;
+using AssetTrackingSystem.Exceptions;
 using AssetTrackingSystem.Services;
 
 namespace AssetTrackingSystem.Tests;
@@ -10,7 +11,7 @@ public class AssetServiceTests
     private static Office UsaOffice() => new("USA", Currency.USD);
     private static Office TurkeyOffice() => new("Turkey", Currency.TRY);
 
-    // ===== Test case 1: AddAsset gives ids 1, 2 =====
+    // ===== Test suite 1: AddAsset gives ids 1, 2 =====
     [Fact]
     public void AddAsset_TwoAssets_GetsIdsOneAndTwo()
     {
@@ -28,7 +29,7 @@ public class AssetServiceTests
         Assert.Equal(2, second.Id);
     }
 
-    // ===== Test case 2: sorting =====
+    // ===== Test suite 2: sorting =====
     [Fact]
     public void GetAssetsSortedByTypeAndDate_MixedAssets_SortedByTypeThenDate()
     {
@@ -103,7 +104,7 @@ public class AssetServiceTests
         Assert.Empty(result);
     }
 
-    // ===== Test case 3: HasAssets =====
+    // ===== Test suite 3: HasAssets method =====
     [Fact]
     public void HasAssets_ListIsNotEmpty_ReturnsTrue()
     {
@@ -127,7 +128,7 @@ public class AssetServiceTests
         // Assert
         Assert.False(service.HasAssets);
     }
-
+    // ===== Test suite 4: GetData method to pack the asset list and _nextId into an AssetData object =====
     [Fact]
     public void GetData_NoAssets_ReturnsNextIdOneAndEmptyList()
     {
@@ -161,7 +162,7 @@ public class AssetServiceTests
         Assert.Equal(1, data.Assets[0].Id);
         Assert.Equal(2, data.Assets[1].Id);
     }
-
+    // ===== Test suite 5: LoadData method to unpack AssetData object into a memory =====
     [Fact]
     public void LoadData_TwoAssets_RestoresAssetsAndNextId()
     {
@@ -206,5 +207,114 @@ public class AssetServiceTests
         var newAsset = new Computer("Dell", "XPS 13", new DateTime(2024, 5, 20), 1200m, SwedenOffice());
         service.AddAsset(newAsset);
         Assert.Equal(3, newAsset.Id);
+    }
+
+    [Fact]
+    public void GetAssetById_EmptyList_ThrowsAssetNotFoundException()
+    {
+        // Arrange
+        var service = new AssetService();
+
+        // Act & Assert
+        Assert.Throws<AssetNotFoundException>(() => service.GetAssetById(1));
+    }
+
+    [Fact]
+    public void GetAssetById_IdDoesNotExist_ThrowsAssetNotFoundException()
+    {
+        // Arrange
+        var service = new AssetService();
+        var asset = new Computer("HP", "EliteBook 840", new DateTime(2025, 9, 1), 1100m, SwedenOffice());
+        service.AddAsset(asset);
+
+        // Act & Assert
+        Assert.Throws<AssetNotFoundException>(() => service.GetAssetById(100));
+    }
+
+    [Fact]
+    public void GetAssetById_IdExists_ReturnsAssetWithGivenId()
+    {
+        // Arrange
+        var service = new AssetService();
+        var first = new Computer("HP", "EliteBook 840", new DateTime(2025, 9, 1), 1100m, SwedenOffice());
+        var second = new MobilePhone("Google", "Pixel 11", new DateTime(2026, 7, 11), 950m, TurkeyOffice());
+        var third = new MobilePhone("Xiaomi", "15", new DateTime(2025, 9, 1), 620m, UsaOffice());
+        service.AddAsset(first);
+        service.AddAsset(second);
+        service.AddAsset(third);
+
+        // Act 
+        Asset found = service.GetAssetById(2);
+
+        // Assert
+        Assert.Same(second, found);
+    }
+
+    // ===== Test suite 7: Remove asset =====
+    /*
+        public void RemoveAssetById(int id)
+    {
+        _assets.Remove(GetAssetById(id));
+    }
+    */
+    [Fact]
+    public void RemoveAssetById_IdExists_RemovesOnlyThatAsset()
+    {
+        // Arrange
+        var service = new AssetService();
+        var first = new Computer("HP", "EliteBook 840", new DateTime(2025, 9, 1), 1100m, SwedenOffice());
+        var second = new MobilePhone("Google", "Pixel 11", new DateTime(2026, 7, 11), 950m, TurkeyOffice());
+        var third = new MobilePhone("Xiaomi", "15", new DateTime(2025, 9, 1), 620m, UsaOffice());
+        service.AddAsset(first);
+        service.AddAsset(second);
+        service.AddAsset(third);
+
+        // Act 
+        service.RemoveAssetById(2);
+
+        // Assert
+        List<Asset> remaining = service.GetAssetsSortedById();
+        Assert.Equal(2, remaining.Count);
+        Assert.DoesNotContain(second, remaining);
+        Assert.Contains(first, remaining);
+        Assert.Contains(third, remaining);
+    }
+
+    [Fact]
+    public void RemoveAssetById_IdDoesNotExist_ThrowsAssetNotFoundException()
+    {
+        // Arrange
+        var service = new AssetService();
+        var first = new Computer("HP", "EliteBook 840", new DateTime(2025, 9, 1), 1100m, SwedenOffice());
+        var second = new MobilePhone("Google", "Pixel 11", new DateTime(2026, 7, 11), 950m, TurkeyOffice());
+        var third = new MobilePhone("Xiaomi", "15", new DateTime(2025, 9, 1), 620m, UsaOffice());
+        service.AddAsset(first);
+        service.AddAsset(second);
+        service.AddAsset(third);
+
+        // Act & Assert
+        Assert.Throws<AssetNotFoundException>(() => service.RemoveAssetById(20));
+        Assert.Equal(3, service.GetAssetsSortedById().Count);
+    }
+
+    [Fact]
+    public void AddAsset_AfterRemove_DoesNotReuseRemovedId()
+    {
+        // Arrange
+        var service = new AssetService();
+        var first = new Computer("HP", "EliteBook 840", new DateTime(2025, 9, 1), 1100m, SwedenOffice());
+        var second = new MobilePhone("Google", "Pixel 11", new DateTime(2026, 7, 11), 950m, TurkeyOffice());
+        var third = new MobilePhone("Xiaomi", "15", new DateTime(2025, 9, 1), 620m, UsaOffice());
+        service.AddAsset(first);
+        service.AddAsset(second);
+        service.AddAsset(third);
+
+        // Act 
+        service.RemoveAssetById(2);
+        var fourth = new MobilePhone("Google", "Pixel 11", new DateTime(2026, 7, 11), 950m, TurkeyOffice());
+        service.AddAsset(fourth);
+
+        // Assert
+        Assert.Equal(4, fourth.Id);
     }
 }

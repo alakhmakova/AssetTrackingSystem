@@ -50,8 +50,8 @@ public class AssetService
         return asset;
     }
 
-    // Remove the product with this id; 
-    //Throw AssetNotFoundException if there is no asset with this id
+    // Remove the asset with this id; 
+    // Throw AssetNotFoundException if there is no asset with this id
     public void RemoveAssetById(int id)
     {
         _assets.Remove(GetAssetById(id));
