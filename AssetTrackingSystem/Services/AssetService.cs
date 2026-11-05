@@ -44,13 +44,14 @@ public class AssetService
     // Throw AssetNotFoundException if there is no asset with this id
     public void RemoveAssetById(int id) => throw new NotImplementedException();
 
-    // Assets and next id, ready to be saved
+    // Packs what is in memory (the asset list and _nextId) into an AssetData object and returns it.
+    // Assets and next id, ready to be saved in the file.
     public AssetData GetData()
     {
         return new AssetData { NextId = _nextId, Assets = GetAssetsSortedById() };
     }
 
-    // Replace the list and the next id with data loaded from the file
+    // Unpacks a ready AssetData back into memory: replaces the asset list and sets _nextId.
     public void LoadData(AssetData data)
     {
         _assets.Clear(); // readonly forbids replacing the list, but its contents can still change

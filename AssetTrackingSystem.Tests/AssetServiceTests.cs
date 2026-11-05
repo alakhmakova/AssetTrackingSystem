@@ -121,10 +121,107 @@ public class AssetServiceTests
     [Fact]
     public void HasAssets_ListIsEmpty_ReturnsFalse()
     {
-        // Arrange: 
+        // Arrange
         var service = new AssetService();
 
         // Assert
         Assert.False(service.HasAssets);
+    }
+
+    [Fact]
+    public void GetData_NoAssets_ReturnsNextIdOneAndEmptyList()
+    {
+        // Arrange
+        var service = new AssetService();
+
+        // Act
+        AssetData data = service.GetData();
+
+        // Assert
+        Assert.Equal(1, data.NextId);
+        Assert.Empty(data.Assets);
+    }
+
+    [Fact]
+    public void GetData_TwoAssets_ReturnsAllAssetsAndNextIdThree()
+    {
+        // Arrange
+        var service = new AssetService();
+        var first = new MobilePhone("Samsung", "Galaxy S26 Plus", new DateTime(2026, 11, 5), 1500m, TurkeyOffice());
+        var second = new Computer("HP", "EliteBook 840", new DateTime(2025, 9, 1), 1100m, UsaOffice());
+        service.AddAsset(first);
+        service.AddAsset(second);
+
+        // Act
+        AssetData data = service.GetData();
+
+        // Assert
+        Assert.Equal(3, data.NextId);
+        Assert.Equal(2, data.Assets.Count);
+        Assert.Equal(1, data.Assets[0].Id);
+        Assert.Equal(2, data.Assets[1].Id);
+    }
+    /*
+        public void LoadData(AssetData data)
+    {
+        _assets.Clear(); // readonly forbids replacing the list, but its contents can still change
+        _assets.AddRange(data.Assets);
+        // Never below the biggest existing id + 1, even if the file was edited by hand
+        int maxId = _assets.Count > 0 ? _assets.Max(p => p.Id) : 0;
+        _nextId = Math.Max(data.NextId, maxId + 1);
+    }
+    */
+    [Fact]
+    public void LoadData_TwoAssets_RestoresAssetsAndNextId()
+    {
+        // Arrange: another service gives the assets ids 1 and 2 -> data like from the file
+        var source = new AssetService();
+        source.AddAsset(new MobilePhone("Samsung", "Galaxy S26 Plus", new DateTime(2026, 11, 5), 1500m, TurkeyOffice()));
+        source.AddAsset(new Computer("HP", "EliteBook 840", new DateTime(2025, 9, 1), 1100m, UsaOffice()));
+        AssetData data = source.GetData();   // NextId = 3
+
+        var service = new AssetService();
+
+        // Act
+        service.LoadData(data);
+
+        // Assert: both assets are loaded
+        List<Asset> assets = service.GetAssetsSortedById();
+        Assert.Equal(2, assets.Count);
+        Assert.Equal("Galaxy S26 Plus", assets[0].Model);
+
+        // Assert: numbering continues from the file
+        var newAsset = new Computer("Dell", "XPS 13", new DateTime(2024, 5, 20), 1200m, SwedenOffice());
+        service.AddAsset(newAsset);
+        Assert.Equal(3, newAsset.Id);
+    }
+    /*
+    Твой тест, по образцу: защита от ручной правки файла. 
+    Подготовь данные так же (2 ассета, Id 1 и 2), 
+    а потом «испорти» счётчик, как будто файл правили руками: data.NextId = 1; 
+    (у AssetData сеттер публичный, это можно). 
+    После LoadData новый ассет должен получить Id 3, а не 1, иначе будет дубль. 
+    Это проверяет строку с Math.Max в твоём LoadData.
+    */
+
+    [Fact]
+    public void LoadData_NextIdTooSmall_NewAssetGetsNextFreeId()
+    {
+        // Arrange: another service gives the assets ids 1 and 2 -> data like from the file
+        var source = new AssetService();
+        source.AddAsset(new MobilePhone("Samsung", "Galaxy S26 Plus", new DateTime(2026, 11, 5), 1500m, TurkeyOffice()));
+        source.AddAsset(new Computer("HP", "EliteBook 840", new DateTime(2025, 9, 1), 1100m, UsaOffice()));
+        AssetData data = source.GetData();   // NextId = 3
+        data.NextId = 1; // file was edited by hand
+
+        var service = new AssetService();
+
+        // Act
+        service.LoadData(data);
+
+        // Assert: new asset has to get Id 3, not 1
+        var newAsset = new Computer("Dell", "XPS 13", new DateTime(2024, 5, 20), 1200m, SwedenOffice());
+        service.AddAsset(newAsset);
+        Assert.Equal(3, newAsset.Id);
     }
 }
