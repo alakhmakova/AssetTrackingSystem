@@ -37,7 +37,16 @@ public class AssetService
         return _assets.OrderBy(a => a.Id).ToList();
     }
     // Brand or model contains the text (ignore case); throw AssetNotFoundException if nothing is found
-    public List<Asset> SearchAssets(string text) => throw new NotImplementedException();
+    public List<Asset> SearchAssets(string text)
+    {
+        var found = _assets.Where(a => a.Brand.Contains(text, StringComparison.OrdinalIgnoreCase) ||
+                                  a.Model.Contains(text, StringComparison.OrdinalIgnoreCase)).ToList();
+        if (found.Count == 0)
+        {
+            throw new AssetNotFoundException($"No assets found for \"{text}\".");
+        }
+        return found;
+    }
 
     // Throw AssetNotFoundException if there is no asset with this id
     public Asset GetAssetById(int id)

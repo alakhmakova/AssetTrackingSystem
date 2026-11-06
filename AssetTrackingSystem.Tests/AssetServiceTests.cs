@@ -1,6 +1,7 @@
 using AssetTrackingSystem.Models;
 using AssetTrackingSystem.Exceptions;
 using AssetTrackingSystem.Services;
+using System.Security.AccessControl;
 
 namespace AssetTrackingSystem.Tests;
 
@@ -251,12 +252,6 @@ public class AssetServiceTests
     }
 
     // ===== Test suite 7: Remove asset =====
-    /*
-        public void RemoveAssetById(int id)
-    {
-        _assets.Remove(GetAssetById(id));
-    }
-    */
     [Fact]
     public void RemoveAssetById_IdExists_RemovesOnlyThatAsset()
     {
@@ -316,5 +311,107 @@ public class AssetServiceTests
 
         // Assert
         Assert.Equal(4, fourth.Id);
+    }
+    // ===== Test suite 8: Search by brand or model =====
+
+    [Fact]
+    public void SearchAssets_TextNotFound_ThrowsAssetNotFoundException()
+    {
+        // Arrange
+        var service = new AssetService();
+        var first = new Computer("HP", "EliteBook 840", new DateTime(2025, 9, 1), 1100m, SwedenOffice());
+        var second = new MobilePhone("Google", "Pixel 11", new DateTime(2026, 7, 11), 950m, TurkeyOffice());
+        var third = new MobilePhone("Xiaomi", "15", new DateTime(2025, 9, 1), 620m, UsaOffice());
+        service.AddAsset(first);
+        service.AddAsset(second);
+        service.AddAsset(third);
+
+        // Act & Assert
+        Assert.Throws<AssetNotFoundException>(() => service.SearchAssets("Apple"));
+    }
+
+    [Fact]
+    public void SearchAssets_EmptyList_ThrowsAssetNotFoundException()
+    {
+        // Arrange
+        var service = new AssetService();
+
+        // Act & Assert
+        Assert.Throws<AssetNotFoundException>(() => service.SearchAssets("Apple"));
+    }
+
+    [Fact]
+    public void SearchAssets_SearchByBrand_ReturnsAssetsWithGivenBrand()
+    {
+        // Arrange
+        var service = new AssetService();
+        var first = new Computer("HP", "EliteBook 840", new DateTime(2025, 9, 1), 1100m, SwedenOffice());
+        var second = new MobilePhone("Google", "Pixel 11", new DateTime(2026, 7, 11), 950m, TurkeyOffice());
+        var third = new MobilePhone("Xiaomi", "15", new DateTime(2025, 9, 1), 620m, UsaOffice());
+        var fourth = new Computer("HP", "AI 15t-fd200", new DateTime(2026, 4, 19), 1499.99m, SwedenOffice());
+        service.AddAsset(first);
+        service.AddAsset(second);
+        service.AddAsset(third);
+        service.AddAsset(fourth);
+
+        // Act
+        List<Asset> found = service.SearchAssets("HP");
+
+        // Assert
+        Assert.Contains(first, found);
+        Assert.Contains(fourth, found);
+        Assert.DoesNotContain(second, found);
+        Assert.DoesNotContain(third, found);
+    }
+
+    [Fact]
+    public void SearchAssets_SearchByModel_ReturnsAssetsWithGivenModel()
+    {
+        // Arrange
+        var service = new AssetService();
+        var first = new MobilePhone("Google", "Pixel 11", new DateTime(2026, 7, 11), 950m, TurkeyOffice());
+        var second = new Computer("HP", "EliteBook 840", new DateTime(2025, 9, 1), 1100m, SwedenOffice());
+        var third = new Computer("HP", "AI 15t-fd200", new DateTime(2026, 4, 19), 1499.99m, SwedenOffice());
+        var fourth = new MobilePhone("Xiaomi", "15", new DateTime(2025, 9, 1), 620m, UsaOffice());
+        service.AddAsset(first);
+        service.AddAsset(second);
+        service.AddAsset(third);
+        service.AddAsset(fourth);
+
+        // Act
+        List<Asset> found = service.SearchAssets("15");
+
+        // Assert
+        Assert.Contains(third, found);
+        Assert.Contains(fourth, found);
+        Assert.DoesNotContain(second, found);
+        Assert.DoesNotContain(first, found);
+    }
+
+    [Theory]
+    [InlineData("oo")]
+    [InlineData("OO")]
+    [InlineData("Oo")]
+    public void SearchAssets_TextInBrandOrModel_ReturnsBothMatches(string text)
+    {
+        // Arrange
+        var service = new AssetService();
+        var first = new MobilePhone("Google", "Pixel 11", new DateTime(2026, 7, 11), 950m, TurkeyOffice());
+        var second = new Computer("HP", "EliteBook 840", new DateTime(2025, 9, 1), 1100m, SwedenOffice());
+        var third = new Computer("HP", "AI 15t-fd200", new DateTime(2026, 4, 19), 1499.99m, SwedenOffice());
+        var fourth = new MobilePhone("Xiaomi", "15", new DateTime(2025, 9, 1), 620m, UsaOffice());
+        service.AddAsset(first);
+        service.AddAsset(second);
+        service.AddAsset(third);
+        service.AddAsset(fourth);
+
+        // Act
+        List<Asset> found = service.SearchAssets(text);
+
+        // Assert
+        Assert.DoesNotContain(third, found);
+        Assert.DoesNotContain(fourth, found);
+        Assert.Contains(second, found);
+        Assert.Contains(first, found);
     }
 }
