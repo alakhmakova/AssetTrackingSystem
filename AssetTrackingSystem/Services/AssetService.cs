@@ -14,6 +14,10 @@ public class AssetService
 
     public void AddAsset(Asset asset)
     {
+        if (asset is null)
+        {
+            throw new ArgumentNullException(nameof(asset));
+        }
         asset.Id = _nextId;
         _nextId++;
         _assets.Add(asset);
@@ -83,10 +87,14 @@ public class AssetService
     // Unpacks a ready AssetData back into memory: replaces the asset list and sets _nextId.
     public void LoadData(AssetData data)
     {
+        if (data is null)
+        {
+            throw new ArgumentNullException(nameof(data));
+        }
         _assets.Clear(); // readonly forbids replacing the list, but its contents can still change
         _assets.AddRange(data.Assets);
         // Never below the biggest existing id + 1, even if the file was edited by hand
-        int maxId = _assets.Count > 0 ? _assets.Max(p => p.Id) : 0;
+        int maxId = _assets.Count > 0 ? _assets.Max(a => a.Id) : 0;
         _nextId = Math.Max(data.NextId, maxId + 1);
     }
 }

@@ -435,4 +435,26 @@ public class AssetServiceTests
         // Act & Assert
         Assert.Throws<ValidationException>(() => service.SearchAssets(text));
     }
+
+    // ===== Test suite 9: null arguments (a bug in the calling code, not user input) =====
+    [Fact]
+    public void AddAsset_Null_ThrowsArgumentNullException()
+    {
+        // Arrange
+        var service = new AssetService();
+
+        // Act & Assert: "!" tells the compiler that we pass null on purpose
+        Assert.Throws<ArgumentNullException>(() => service.AddAsset(null!));
+        Assert.False(service.HasAssets);
+    }
+
+    [Fact]
+    public void LoadData_Null_ThrowsArgumentNullException()
+    {
+        // Arrange
+        var service = new AssetService();
+
+        // Act & Assert
+        Assert.Throws<ArgumentNullException>(() => service.LoadData(null!));
+    }
 }
