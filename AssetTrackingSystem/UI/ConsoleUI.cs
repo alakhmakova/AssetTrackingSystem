@@ -18,7 +18,7 @@ public class ConsoleUI
         {
             _converter = new CurrencyConverter(CurrencyConverter.FetchRates());
         }
-        catch (Exception e)
+        catch (Exception)
         {
             InputHelper.ShowWarning("Could not load exchange rates. Local prices are not available.");
         }
@@ -236,7 +236,7 @@ public class ConsoleUI
     }
 
     // Print assets as a table; column width = longest value or header + padding
-    // TODO: color rows by end-of-life status
+    // Rows are colored by end-of-life status: red = 3 months or less left, yellow = 6 months or less
     private void DisplayAssetsTable(List<Asset> assets)
     {
         string[] headers = { "Id", "Type", "Brand", "Model", "Office", "Purchase Date", "Price (USD)", "Local Price" };
@@ -247,9 +247,25 @@ public class ConsoleUI
         InputHelper.ShowInfo(new string('-', tableWidth));
         InputHelper.ShowInfo(FormatRow(headers, widths));
         InputHelper.ShowInfo(new string('-', tableWidth));
-        foreach (string[] row in rows)
+        foreach (Asset asset in assets)
         {
-            Console.WriteLine(FormatRow(row, widths));
+            // 1. Pick the row color by the asset's status today
+            switch (asset.GetStatus(DateTime.Today))
+            {
+                case LifeStatus.Red:
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    break;
+                case LifeStatus.Yellow:
+                    Console.ForegroundColor = ConsoleColor.Yellow;
+                    break;
+                // LifeStatus.Normal: keep the default color
+            }
+
+            // 2. Print the row in that color
+            Console.WriteLine(FormatRow(ToRow(asset), widths));
+
+            // 3. Back to the default color for the next row
+            Console.ResetColor();
         }
         InputHelper.ShowInfo(new string('-', tableWidth));
     }

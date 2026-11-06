@@ -17,6 +17,8 @@ public abstract class Asset
     public string Brand { get; }
     public string Model { get; }
     public DateTime PurchaseDate { get; }
+    [JsonIgnore]
+    public DateTime EndOfLife => PurchaseDate.AddYears(3);
     public decimal PriceUsd { get; }
     public Office Office { get; }
 
@@ -56,5 +58,18 @@ public abstract class Asset
     public static bool IsValidPrice(decimal price)
     {
         return price > 0 && (Math.Round(price, 2) == price);
+    }
+
+    public LifeStatus GetStatus(DateTime today)
+    {
+        if (today >= EndOfLife.AddMonths(-3))
+        {
+            return LifeStatus.Red;
+        }
+        else if (today >= EndOfLife.AddMonths(-6))
+        {
+            return LifeStatus.Yellow;
+        }
+        else { return LifeStatus.Normal; }
     }
 }
