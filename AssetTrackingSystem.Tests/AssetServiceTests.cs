@@ -390,6 +390,7 @@ public class AssetServiceTests
 
     [Theory]
     [InlineData("oo")]
+    [InlineData(" oo ")]
     [InlineData("OO")]
     [InlineData("Oo")]
     public void SearchAssets_TextInBrandOrModel_ReturnsBothMatches(string text)
@@ -413,5 +414,25 @@ public class AssetServiceTests
         Assert.DoesNotContain(fourth, found);
         Assert.Contains(second, found);
         Assert.Contains(first, found);
+    }
+
+    [Theory]
+    [InlineData("   ")]
+    [InlineData("")]
+    public void SearchAssets_EmptyText_ThrowsValidationException(string text)
+    {
+        // Arrange
+        var service = new AssetService();
+        var first = new MobilePhone("Google", "Pixel 11", new DateTime(2026, 7, 11), 950m, TurkeyOffice());
+        var second = new Computer("HP", "EliteBook 840", new DateTime(2025, 9, 1), 1100m, SwedenOffice());
+        var third = new Computer("HP", "AI 15t-fd200", new DateTime(2026, 4, 19), 1499.99m, SwedenOffice());
+        var fourth = new MobilePhone("Xiaomi", "15", new DateTime(2025, 9, 1), 620m, UsaOffice());
+        service.AddAsset(first);
+        service.AddAsset(second);
+        service.AddAsset(third);
+        service.AddAsset(fourth);
+
+        // Act & Assert
+        Assert.Throws<ValidationException>(() => service.SearchAssets(text));
     }
 }

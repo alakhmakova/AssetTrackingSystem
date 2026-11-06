@@ -12,7 +12,7 @@ public class AssetTests
     private static Office UsaOffice() => new("USA", Currency.USD);
     private static Office TurkeyOffice() => new("Turkey", Currency.TRY);
 
-    // ===== Test case 1: valid data -> properties are set =====
+    // ===== Test suite 1: valid data -> properties are set =====
     [Fact]
     public void Constructor_ValidComputer_SetsAllProperties()
     {
@@ -51,7 +51,19 @@ public class AssetTests
         Assert.Equal("Mobile phone", mobilePhone.Type);
     }
 
-    // ===== Test case 2: invalid data -> exception. =====
+    [Fact]
+    public void Constructor_BrandAndModelWithSpaces_TrimsThem()
+    {
+        var office = TurkeyOffice();
+        var date = new DateTime(2025, 11, 19);
+        var computer = new Computer(" Apple ", "  MacBook Pro  ", date, 1500m, office);
+
+        Assert.Equal("Apple", computer.Brand);
+        Assert.Equal("MacBook Pro", computer.Model);
+
+    }
+
+    // ===== Test suite 2: invalid data -> exception. =====
     // Validation lives in one place (the Asset constructor), so testing one subclass is enough.
     // Test passes only if the code inside () => ... throws ValidationException
     [Theory]
@@ -104,7 +116,7 @@ public class AssetTests
     new Computer("Apple", "MacBook Pro", DateTime.Today, 1500m, null!));
     }
 
-    // ===== Testing validation methods =====
+    // ===== Test suite 3: Testing validation methods =====
     [Theory]
     [InlineData(10.55, true)]
     [InlineData(0, false)]

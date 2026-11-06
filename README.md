@@ -247,13 +247,13 @@ AssetTrackingSystem/                       ← repository root, AssetTrackingSys
 
 ## Tests
 
-50 xUnit tests, all passing.
+54 xUnit tests, all passing.
 
 | Test class | What is tested |
 |---|---|
-| `AssetTests` | Constructor sets all properties; empty brand/model, a future date, an invalid price (0, negative, more than 2 decimals) and a missing office throw `ValidationException`; `IsValidPrice` and `IsValidDate` |
+| `AssetTests` | Constructor sets all properties; empty brand/model, a future date, an invalid price (0, negative, more than 2 decimals) and a missing office throw `ValidationException`; spaces around brand and model are trimmed; `IsValidPrice` and `IsValidDate` |
 | `OfficeTests` | Constructor sets name and currency |
-| `AssetServiceTests` | Ids grow and are never reused; both sorts (including an empty list); `HasAssets`; `GetData` / `LoadData` (including a hand-edited `NextId` that is too small); get and remove by id (found / not found); search by brand, by model, case-insensitive, nothing found |
+| `AssetServiceTests` | Ids grow and are never reused; both sorts (including an empty list); `HasAssets`; `GetData` / `LoadData` (including a hand-edited `NextId` that is too small); get and remove by id (found / not found); search by brand, by model, case-insensitive, with spaces around the text, empty text throws `ValidationException`, nothing found |
 | `CurrencyConverterTests` | USD→SEK, USD→EUR, EUR→SEK, same currency, missing rate throws `CurrencyRateNotFoundException`. Uses fixed fake rates, so no internet is needed |
 
 ### Out of test scope (on purpose)

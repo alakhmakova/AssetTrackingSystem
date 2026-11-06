@@ -36,9 +36,16 @@ public class AssetService
     {
         return _assets.OrderBy(a => a.Id).ToList();
     }
-    // Brand or model contains the text (ignore case); throw AssetNotFoundException if nothing is found
+    // Brand or model contains the text (ignore case); 
+    // throw AssetNotFoundException if nothing is found
+    // throw ValidationException if the text is empty
     public List<Asset> SearchAssets(string text)
     {
+        if (string.IsNullOrWhiteSpace(text))
+        {
+            throw new ValidationException("Search string can't be empty");
+        }
+        text = text.Trim();
         var found = _assets.Where(a => a.Brand.Contains(text, StringComparison.OrdinalIgnoreCase) ||
                                   a.Model.Contains(text, StringComparison.OrdinalIgnoreCase)).ToList();
         if (found.Count == 0)

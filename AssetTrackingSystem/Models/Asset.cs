@@ -45,8 +45,8 @@ public abstract class Asset
             throw new ValidationException("Office can't be empty");
         }
 
-        Brand = brand;
-        Model = model;
+        Brand = brand.Trim();
+        Model = model.Trim();
         PurchaseDate = purchaseDate;
         PriceUsd = priceUsd;
         Office = office;

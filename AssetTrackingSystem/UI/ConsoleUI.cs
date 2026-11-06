@@ -176,6 +176,10 @@ public class ConsoleUI
                 {
                     InputHelper.ShowWarning(e.Message);
                 }
+                catch (ValidationException e)
+                {
+                    InputHelper.ShowWarning(e.Message);
+                }
             }
         }
         catch (UserCancelledException e)
@@ -258,7 +262,7 @@ public class ConsoleUI
                 case LifeStatus.Yellow:
                     Console.ForegroundColor = ConsoleColor.Yellow;
                     break;
-                // LifeStatus.Normal: keep the default color
+                    // LifeStatus.Normal: keep the default color
             }
 
             // 2. Print the row in that color
