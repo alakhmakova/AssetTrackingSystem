@@ -7,4 +7,9 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <!-- Copy the test assets next to the .exe, so they are also found when the app is started from Visual Studio (F5) -->
+    <None Update="assets.json" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
 </Project>

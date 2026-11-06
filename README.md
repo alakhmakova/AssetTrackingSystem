@@ -70,7 +70,17 @@ cd AssetTrackingSystem/AssetTrackingSystem
 dotnet run
 ```
 
-The assets are stored in `assets.json` in the folder the app is started from (the project folder when you use `dotnet run` as above).
+### Where the data file is
+
+The assets are saved in `assets.json` in the **folder the app is started from** (the current working directory). Which folder that is depends on how you start the app:
+
+| How you start the app | Where `assets.json` is |
+|---|---|
+| `dotnet run` inside `AssetTrackingSystem/AssetTrackingSystem` (as above) | `AssetTrackingSystem/AssetTrackingSystem/assets.json`, the file with test assets that comes with the repository |
+| `dotnet run --project AssetTrackingSystem` from the repository root | `AssetTrackingSystem/assets.json` in the repository root (a new, empty file) |
+| Visual Studio (F5) | `AssetTrackingSystem/AssetTrackingSystem/bin/Debug/net10.0/assets.json`, a copy of the test file that is placed there on build |
+
+If the app says *"No saved assets found. Starting with an empty list."*, it was started from a folder without `assets.json`. The file is created there after the first asset is added. To see the test assets, start the app from the project folder as shown above or from Visual Studio.
 
 ### Running the tests
 

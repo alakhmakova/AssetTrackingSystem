@@ -5,10 +5,10 @@
       "$type": "Computer",
       "Type": "Computer",
       "Id": 1,
-      "Brand": "Apple",
-      "Model": "MacBook Pro",
-      "PurchaseDate": "2023-03-15T00:00:00",
-      "PriceUsd": 1500,
+      "Brand": "Dell",
+      "Model": "Latitude 5420",
+      "PurchaseDate": "2023-12-10T00:00:00",
+      "PriceUsd": 1150,
       "Office": {
         "Name": "Sweden",
         "Currency": "SEK"
@@ -19,35 +19,35 @@
       "Type": "Computer",
       "Id": 2,
       "Brand": "Lenovo",
-      "Model": "ThinkPad X1",
-      "PurchaseDate": "2023-06-20T00:00:00",
-      "PriceUsd": 1300,
-      "Office": {
-        "Name": "Turkey",
-        "Currency": "TRY"
-      }
-    },
-    {
-      "$type": "Computer",
-      "Type": "Computer",
-      "Id": 3,
-      "Brand": "Dell",
-      "Model": "XPS 13",
-      "PurchaseDate": "2024-05-20T00:00:00",
-      "PriceUsd": 1200,
+      "Model": "ThinkPad X1 Carbon",
+      "PurchaseDate": "2024-02-20T00:00:00",
+      "PriceUsd": 1650,
       "Office": {
         "Name": "USA",
         "Currency": "USD"
       }
     },
     {
-      "$type": "Computer",
-      "Type": "Computer",
+      "$type": "MobilePhone",
+      "Type": "Mobile phone",
+      "Id": 3,
+      "Brand": "Apple",
+      "Model": "iPhone 15",
+      "PurchaseDate": "2024-03-25T00:00:00",
+      "PriceUsd": 999,
+      "Office": {
+        "Name": "Turkey",
+        "Currency": "TRY"
+      }
+    },
+    {
+      "$type": "MobilePhone",
+      "Type": "Mobile phone",
       "Id": 4,
-      "Brand": "HP",
-      "Model": "EliteBook 840",
-      "PurchaseDate": "2025-09-01T00:00:00",
-      "PriceUsd": 1100,
+      "Brand": "Samsung",
+      "Model": "Galaxy S24",
+      "PurchaseDate": "2024-04-30T00:00:00",
+      "PriceUsd": 899,
       "Office": {
         "Name": "Sweden",
         "Currency": "SEK"
@@ -57,36 +57,49 @@
       "$type": "Computer",
       "Type": "Computer",
       "Id": 5,
-      "Brand": "Asus",
-      "Model": "ZenBook 14",
-      "PurchaseDate": "2022-12-01T00:00:00",
-      "PriceUsd": 900,
+      "Brand": "Apple",
+      "Model": "MacBook Pro 14",
+      "PurchaseDate": "2024-06-15T00:00:00",
+      "PriceUsd": 1999,
+      "Office": {
+        "Name": "Sweden",
+        "Currency": "SEK"
+      }
+    },
+    {
+      "$type": "Computer",
+      "Type": "Computer",
+      "Id": 6,
+      "Brand": "HP",
+      "Model": "EliteBook 840",
+      "PurchaseDate": "2024-09-01T00:00:00",
+      "PriceUsd": 1250,
       "Office": {
         "Name": "Turkey",
         "Currency": "TRY"
       }
     },
     {
-      "$type": "MobilePhone",
-      "Type": "Mobile phone",
-      "Id": 6,
-      "Brand": "Apple",
-      "Model": "iPhone 15",
-      "PurchaseDate": "2025-02-01T00:00:00",
-      "PriceUsd": 1200,
+      "$type": "Computer",
+      "Type": "Computer",
+      "Id": 7,
+      "Brand": "Asus",
+      "Model": "ZenBook 14",
+      "PurchaseDate": "2025-01-20T00:00:00",
+      "PriceUsd": 1099,
       "Office": {
         "Name": "USA",
         "Currency": "USD"
       }
     },
     {
-      "$type": "MobilePhone",
-      "Type": "Mobile phone",
+      "$type": "Computer",
+      "Type": "Computer",
       "Id": 8,
-      "Brand": "Nokia",
-      "Model": "XR20",
-      "PurchaseDate": "2023-07-25T00:00:00",
-      "PriceUsd": 500,
+      "Brand": "Microsoft",
+      "Model": "Surface Laptop 6",
+      "PurchaseDate": "2025-08-12T00:00:00",
+      "PriceUsd": 1499.99,
       "Office": {
         "Name": "Turkey",
         "Currency": "TRY"
@@ -97,9 +110,9 @@
       "Type": "Mobile phone",
       "Id": 9,
       "Brand": "Google",
-      "Model": "Pixel 8",
-      "PurchaseDate": "2023-04-10T00:00:00",
-      "PriceUsd": 700,
+      "Model": "Pixel 9",
+      "PurchaseDate": "2024-11-05T00:00:00",
+      "PriceUsd": 799,
       "Office": {
         "Name": "USA",
         "Currency": "USD"
@@ -109,39 +122,39 @@
       "$type": "MobilePhone",
       "Type": "Mobile phone",
       "Id": 10,
-      "Brand": "Motorola",
-      "Model": "Edge 40",
-      "PurchaseDate": "2026-03-15T00:00:00",
-      "PriceUsd": 600,
+      "Brand": "Nokia",
+      "Model": "G42",
+      "PurchaseDate": "2025-03-14T00:00:00",
+      "PriceUsd": 249.5,
       "Office": {
         "Name": "Sweden",
         "Currency": "SEK"
       }
     },
     {
-      "$type": "Computer",
-      "Type": "Computer",
+      "$type": "MobilePhone",
+      "Type": "Mobile phone",
       "Id": 11,
-      "Brand": "Microsoft",
-      "Model": "Surface Laptop 6",
-      "PurchaseDate": "2024-08-12T00:00:00",
-      "PriceUsd": 1350,
+      "Brand": "Xiaomi",
+      "Model": "14T",
+      "PurchaseDate": "2025-10-02T00:00:00",
+      "PriceUsd": 649,
       "Office": {
-        "Name": "USA",
-        "Currency": "USD"
+        "Name": "Turkey",
+        "Currency": "TRY"
       }
     },
     {
       "$type": "MobilePhone",
       "Type": "Mobile phone",
       "Id": 12,
-      "Brand": "Samsung",
-      "Model": "Galaxy S23",
-      "PurchaseDate": "2024-11-01T00:00:00",
-      "PriceUsd": 950,
+      "Brand": "Motorola",
+      "Model": "Edge 50",
+      "PurchaseDate": "2026-05-18T00:00:00",
+      "PriceUsd": 549,
       "Office": {
-        "Name": "Sweden",
-        "Currency": "SEK"
+        "Name": "USA",
+        "Currency": "USD"
       }
     }
   ]
