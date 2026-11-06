@@ -38,14 +38,14 @@ public class AssetFileStorage
             }
 
             string fromFile = File.ReadAllText(_filePath);
-            // The Product constructor runs here, so invalid data is rejected
+            // The Asset constructor runs here, so invalid data is rejected
             AssetData? loaded = JsonSerializer.Deserialize<AssetData>(fromFile, _jsonOptions);
             return loaded ?? new(); // "null" in the file -> empty data
         }
         catch (JsonException e) { throw new DataFileException("Could not load assets. The data file is corrupted.", e); }
         catch (IOException e) { throw new DataFileException("Could not load assets.", e); }
         catch (UnauthorizedAccessException e) { throw new DataFileException("Could not load assets. Access denied.", e); }
-        catch (ValidationException e) { throw new DataFileException("Could not load assets. The file contains an invalid product.", e); }
+        catch (ValidationException e) { throw new DataFileException("Could not load assets. The file contains an invalid asset.", e); }
 
     }
 }
