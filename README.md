@@ -17,7 +17,7 @@ The code is split into layers, so that each class has one job:
 
 - **Add assets** – choose the type (Computer or Mobile phone), enter brand, model, purchase date and price in USD, and choose the office (Sweden, USA or Turkey). Keep adding until you type `Q` (works at any step).
 - **Asset IDs** – every new asset automatically gets the next number: 1, 2, 3… An id is never given out again, even after the asset is removed or the app is restarted.
-- **Input validation** – empty brand or model is rejected; the purchase date must be in the format `yyyy-MM-dd` and can't be in the future; the price must be a number greater than 0 with at most 2 decimals. On invalid input the app asks again instead of crashing.
+- **Input validation** – empty brand or model is rejected; the purchase date must be in the format `yyyy-MM-dd` and can't be in the future; the price must be a number greater than 0 with at most 2 decimals, and both a dot and a comma work as the decimal separator (`12.50` or `12,50`). On invalid input the app asks again instead of crashing.
 - **List assets by office** – sorted by office, then by purchase date.
 - **List assets by type** – sorted by type, then by purchase date.
 - **Local price** – the USD price converted to the currency of the asset's office (SEK, USD or TRY) with today's exchange rates from the European Central Bank. If there is no internet connection, the app shows a warning on start, the Local Price column shows `N/A`, and everything else still works.
@@ -252,25 +252,27 @@ AssetTrackingSystem/                       ← repository root, AssetTrackingSys
     ├── AssetTests.cs
     ├── OfficeTests.cs
     ├── CurrencyRateTests.cs
+    ├── InputHelperTests.cs
     ├── AssetServiceTests.cs
     └── CurrencyConverterTests.cs
 ```
 
 ## Tests
 
-64 xUnit tests, all passing.
+71 xUnit tests, all passing.
 
 | Test class | What is tested |
 |---|---|
 | `AssetTests` | Constructor sets all properties; empty brand/model, a future date, an invalid price (0, negative, more than 2 decimals) and a missing office throw `ValidationException`; spaces around brand and model are trimmed; `IsValidPrice` and `IsValidDate` |
 | `OfficeTests` | Constructor sets name and currency; empty name throws `ValidationException`; spaces around the name are trimmed |
+| `InputHelperTests` | `TryParsePrice` reads a price with a dot or a comma (`12.50` and `12,50`) and rejects text, thousands separators, two separators and a minus sign |
 | `CurrencyRateTests` | Constructor sets code and rate; a rate of 0 or below and an empty currency code throw `ValidationException` |
 | `AssetServiceTests` | Ids grow and are never reused; both sorts (including an empty list); `HasAssets`; `GetData` / `LoadData` (including a hand-edited `NextId` that is too small); get and remove by id (found / not found); search by brand, by model, case-insensitive, with spaces around the text, empty text throws `ValidationException`, nothing found; `null` passed to `AddAsset` or `LoadData` throws `ArgumentNullException` |
 | `CurrencyConverterTests` | USD→SEK, USD→EUR, EUR→SEK, same currency, missing rate throws `CurrencyRateNotFoundException`. Uses fixed fake rates, so no internet is needed |
 
 ### Out of test scope (on purpose)
 
-- **`ConsoleUI` and `InputHelper`** – they only read from and write to the console. They were tested by hand.
+- **`ConsoleUI` and the console part of `InputHelper`** – they only read from and write to the console. They were tested by hand. The price parsing (`TryParsePrice`) is a separate method and is tested.
 - **`CurrencyConverter.FetchRates`** – it downloads live data from the bank, so the result depends on the internet and changes every day. The conversion logic is tested with fake rates instead.
 
 ### Not written yet

@@ -49,12 +49,21 @@ public static class InputHelper
         while (true)
         {
             string userInput = ReadTextOrCancel(prompt, emptyInputMessage);
-            if (decimal.TryParse(userInput, out decimal price) && Asset.IsValidPrice(price))
+            if (TryParsePrice(userInput, out decimal price) && Asset.IsValidPrice(price))
             {
                 return price;
             }
             ShowError(invalidPriceMessage);
         }
+    }
+
+    // Read a price with a dot or a comma as the decimal separator, on any computer:
+    // "12.50" and "12,50" both give 12.50. Thousands separators are not allowed, so "1,234.50" fails.
+    // Separate from ReadPrice, so it can be tested without the console.
+    public static bool TryParsePrice(string input, out decimal price)
+    {
+        string normalized = input.Replace(',', '.');
+        return decimal.TryParse(normalized, NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out price);
     }
 
     // Ask until the date has the format yyyy-MM-dd and is not in the future (Asset.IsValidDate)
@@ -119,7 +128,7 @@ public static class InputHelper
         }
     }
 
-    // Colored messages: red = error, green = success, blue = info, yellow = warning
+    // Colored messages: red = error, green = success, magenta = info, yellow = warning
     public static void ShowError(string message) => WriteInColor(message, ConsoleColor.Red);
 
     public static void ShowSuccess(string message) => WriteInColor(message, ConsoleColor.Green);
